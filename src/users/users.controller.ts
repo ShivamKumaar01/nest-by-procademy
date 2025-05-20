@@ -53,12 +53,15 @@ import {
   DefaultValuePipe,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { GetUserParamDto } from './dtos/get-user-param.dto';
 
 @Controller('users')
 export class UsersController {
@@ -68,10 +71,19 @@ export class UsersController {
   getUsers(
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    // @Param() param:GetUserParamDto
   ) {
     console.log(limit, page);
     return this.usersService.getAllUsers(); 
   }
+  //  @Get()
+  // getUsers(
+  //   @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  //   @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  // ) {
+  //   console.log(limit, page);
+  //   return this.usersService.getAllUsers(); 
+  // }
 
   @Get(':id/')
   getUserById(@Param('id', ParseIntPipe) id: number) {
@@ -79,8 +91,16 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body(new ValidationPipe()) user: any) {
-    this.usersService.createUser(user); 
+  // commmented line is for validation pipe in a particular request
+  //  createUser(@Body(new ValidationPipe()) user: CreateUserDto) {
+  //  console.log(user)
+  // typeof user is object and user is not a instance of CreateUserDto
+  //   this.usersService.createUser(user); 
+  //   return 'A new user is created successfully';
+  // }
+  createUser(@Body() user: CreateUserDto) {
+    console.log(user instanceof CreateUserDto)
+    // this.usersService.createUser(user); 
     return 'A new user is created successfully';
   }
 }
